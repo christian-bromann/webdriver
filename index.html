@@ -1315,6 +1315,12 @@ It is acknowledged that this is complementary to the Evil Bit [[!RFC3514]].
 
  <tr>
   <td>POST</td>
+  <td>/session/{<var>session id</var>}/window/new</td>
+  <td><a>Create Window</a></td>
+ </tr>
+
+ <tr>
+  <td>POST</td>
   <td>/session/{<var>session id</var>}/frame</td>
   <td><a>Switch To Frame</a></td>
  </tr>
@@ -3722,7 +3728,7 @@ make the tab containing the <a>browsing context</a> the selected tab.
   from the user selecting the <a>current browsing context</a> for
   interaction, without altering OS-level focus.
 
- <li><p>Return <a>success</a> with date <a>null</a>.
+ <li><p>Return <a>success</a> with data <a>null</a>.
 </ol>
 </section> <!-- /Switch To Window -->
 
@@ -3760,6 +3766,66 @@ make the tab containing the <a>browsing context</a> the selected tab.
   and compare it with the set after the action is performed.
 </aside>
 </section> <!-- /Get Window Handles -->
+
+<section>
+<h3><dfn>Create Window</dfn></h3>
+
+<table class="simple jsoncommand">
+ <tr>
+  <th>HTTP Method</th>
+  <th>URI Template</th>
+ </tr>
+ <tr>
+  <td>GET</td>
+  <td>/session/{<var>session id</var>}/window/new</td>
+ </tr>
+</table>
+
+<p>Create a new top level browsing context.
+
+<p>The <a>remote end steps</a> are:
+
+<ol>
+ <li><p>If there is an active <a>user prompt</a>, that prevents the
+  creation of another <a>top-level browsing context</a>,
+  return <a>error</a> with <a>error code</a> <a>unexpected alert open</a>.
+
+ <li><p>If the implementation does not support creating new top-level
+  browsing contexts, return <a>error</a> with <a>error code</a>
+  <a>unsupported operation</a>.
+
+ <li><p>Let <var>type hint</var> be the result of <a>getting the property</a>
+  "<code>type</code>" from the <var>parameters</var> argument.
+
+ <li><p>Create a new <a>top-level browsing context</a>. If <var>type
+  hint</var> has the value "<code>tab</code>" and the implementation
+  supports multiple browsing context in the same OS window, the new
+  browsing context should share an OS window with the <a>current
+  browsing context</a>, otherwise the created browsing context should be in a
+  new OS window.
+
+ <li><p>Let <var>handle</var> be the
+  associated <a>window handle</a> of the newly created window.
+
+ <li><p>Let <var>type</var> be "<code>tab</code>" if the newly created
+  window shares an OS-level window with the <a>current browsing
+  context</a>, or "<code>window</code>" otherwise.
+
+ <li><p>Let <var>result</var> be a new JSON <a>Object</a> initialised with:
+
+ <dl>
+  <dt>"<code>handle</code>"
+  <dd>The value of <var>handle</var>.
+
+  <dt>"<code>type</code>"
+  <dd>The value of <var>type</var>.
+
+ </dl>
+
+ <li><p>Return <a>success</a> with data <a>result</a>.
+</ol>
+
+</section> <!-- /Create Window -->
 
 <section>
 <h3><dfn>Switch To Frame</dfn></h3>
